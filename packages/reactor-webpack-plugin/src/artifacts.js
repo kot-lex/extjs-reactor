@@ -151,7 +151,8 @@ export function createAppJson({ theme, packages, toolkit, overrides=[], packageD
     // if theme is local add it as an additional package dir
     if (fs.existsSync(theme)) {
         const packageInfo = cjson.load(path.join(theme, 'package.json'));
-        config.theme = packageInfo.name;
+        // get theme name from sencha section if it exists
+        config.theme = (packageInfo.sencha && packageInfo.sencha.name) || packageInfo.name;
         config.packages.dir.push(path.resolve(theme));
     } else {
         config.theme = theme;
@@ -162,7 +163,7 @@ export function createAppJson({ theme, packages, toolkit, overrides=[], packageD
 
 /**
  * Creates a js file containing code to make Ext JS load properly in jsdom
- * @param {String} targetDir 
+ * @param {String} targetDir
  */
 export function createJSDOMEnvironment(targetDir) {
     return 'window.Ext = Ext;';
